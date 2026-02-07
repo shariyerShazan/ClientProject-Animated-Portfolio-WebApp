@@ -8,79 +8,57 @@ import {
   HiOutlineUsers,
   HiOutlineOfficeBuilding,
 } from "react-icons/hi";
-import PlexusBackground from "./PlexusBackground";
+import { ConstellationBackground } from "@/components/ui/ConstellationBackground";
+// import { ConstellationBackground } from "./ConstellationBackground"; // Ensure correct path
 
 const HomeBanner = () => {
   useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: false,
-    //   easing: "ease-out-expo",
-    });
+    AOS.init({ duration: 1000, once: false });
   }, []);
 
-const targetRef = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start end", "end start"],
+  });
 
-// Scroll tracking logic for the banner section
-const { scrollYProgress } = useScroll({
-  target: targetRef,
-  offset: ["start end", "end start"],
-});
-
-// Scroll er upor base kore properties transform kora
-// Scroll barle opacity 0 theke 1 hobe, r y-axis e upore theke niche asbe
-const opacity = useTransform(scrollYProgress, [0, 0.2, 0.3], [0, 1, 1]);
-const y = useTransform(scrollYProgress, [0, 0.2, 0.3], [-50, 0, 0]);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.5, ease: "easeOut" },
-    },
-  } as any;
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.3], [0, 1, 1]);
+  const y = useTransform(scrollYProgress, [0, 0.2, 0.3], [-50, 0, 0]);
 
   return (
-    <section className="relative hero-bg min-h-screen flex items-center pt-20 pb-20 px-6 md:px-16 overflow-hidden bg-white">
-      {/* Background Layer */}
-      <div className="absolute inset-0 z-0 pointer-events-auto overflow-hidden">
-        <PlexusBackground />
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-neutral-950">
+      {/* --- CONSTELLATION BACKGROUND LAYER --- */}
+      <div className="absolute inset-0 z-0">
+        <ConstellationBackground
+          count={100}
+          nodeColor="rgba(111, 222, 247, 1)" // Brand Color #6FDEF7
+          lineColor="rgba(47, 139, 221, 0.2)" // Brand Color #2F8BDD (low opacity)
+          connectionDistance={150}
+          mouseRadius={150}
+        />
       </div>
 
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 items-center gap-12 relative z-10 w-full">
-        {/* Left Content: Side Aligned */}
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 items-center gap-12 relative z-10 w-full px-6 md:px-16">
+        {/* Left Content */}
         <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="text-left" // Forced left alignment
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-left"
         >
-          <motion.div
-            variants={itemVariants}
-            className="inline-flex items-center gap-2.5 px-3 py-1 border-l-3 border-[#6FDEF7] bg-cyan-50/50 mb-8"
-          >
+          <div className="inline-flex items-center gap-2.5 px-3 py-1 border-l-3 border-[#6FDEF7] bg-[#6FDEF7]/10 mb-8">
             <span className="flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-[#ea2857] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#ea2857]"></span>
             </span>
-            <p className="text-[10px] font-bold tracking-[0.3em] text-cyan-800 uppercase">
+            <p className="text-[10px] font-bold tracking-[0.3em] text-cyan-400 uppercase">
               Talent for the Future of Technology
             </p>
-          </motion.div>
+          </div>
 
           <motion.h1
-            style={{ opacity, y }} // Scroll-er value ekhane apply kora hoyeche
-            className="text-3xl md:text-4xl lg:text-[65px] font-black text-[#001D3D] leading-[0.95] mb-8 tracking-tighter"
+            style={{ opacity, y }}
+            className="text-4xl md:text-5xl lg:text-[65px] font-black text-white leading-[0.95] mb-8 tracking-tighter"
           >
             Recruiting Elite Talent <br />
             for{" "}
@@ -89,99 +67,97 @@ const y = useTransform(scrollYProgress, [0, 0.2, 0.3], [-50, 0, 0]);
             </span>
           </motion.h1>
 
-          <motion.p
-            variants={itemVariants}
-            className="text-slate-500 text-lg md:text-xl mb-12 max-w-lg leading-relaxed font-medium border-l-2 border-[#6FDEF7] pl-6"
-          >
+          <p className="text-slate-400 text-lg md:text-xl mb-12 max-w-lg leading-relaxed font-medium border-l-2 border-[#6FDEF7]/30 pl-6">
             We connect visionary companies with exceptional professionals who
-            are shaping the future of decentralized technology and artificial
-            intelligence.
-          </motion.p>
+            are shaping the future of decentralized technology.
+          </p>
 
-          <motion.div variants={itemVariants} className="flex flex-wrap gap-5">
+          <div className="flex flex-wrap gap-5">
             <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 0 20px rgba(47, 139, 221, 0.4)",
+              }}
               whileTap={{ scale: 0.98 }}
-              className="bg-[#001D3D] text-white px-12 py-4 rounded-lg font-bold text-lg shadow-xl shadow-blue-900/10 hover:bg-cyan-600 transition-all duration-300"
+              className="bg-[#2F8BDD] text-white px-12 py-4 rounded-lg font-bold text-lg transition-all duration-300"
             >
               Find Talent
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="group border border-slate-300 text-[#001D3D] px-12 py-4 rounded-lg font-bold text-lg hover:border-cyan-400 transition-all flex items-center gap-2"
+              className="group border border-slate-700 text-white px-12 py-4 rounded-lg font-bold text-lg hover:border-[#6FDEF7] transition-all flex items-center gap-2 bg-white/5 backdrop-blur-sm"
             >
               Explore{" "}
               <span className="group-hover:translate-x-1 transition-transform">
                 →
               </span>
             </motion.button>
-          </motion.div>
+          </div>
         </motion.div>
 
-        {/* Right Content: Clean & Structured Cards */}
+        {/* Right Content: Glassmorphism Cards */}
         <div className="relative h-[500px] hidden lg:block">
-          {/* Card 1 */}
+          {/* Placements Card */}
           <motion.div
             data-aos="fade-left"
-            data-aos-delay="200"
-            animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-0 right-0 bg-white p-6 rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.06)] flex items-center gap-5 border border-slate-100 group"
+            animate={{ y: [0, -15, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-0 right-0 bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-2xl flex items-center gap-5 group"
           >
-            <div className="p-3 bg-blue-50 text-[#2F8BDD] rounded-lg text-3xl group-hover:scale-110 transition-transform">
+            <div className="p-3 bg-[#2F8BDD]/20 text-[#2F8BDD] rounded-xl text-3xl group-hover:scale-110 transition-transform">
               <HiOutlineSearch />
             </div>
             <div className="pr-4">
-              <h3 className="text-2xl font-black text-[#001D3D]">500+</h3>
+              <h3 className="text-2xl font-black text-white">500+</h3>
               <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">
                 Placements
               </p>
             </div>
           </motion.div>
 
-          {/* Card 2 */}
+          {/* Retention Card */}
           <motion.div
             data-aos="fade-left"
-            data-aos-delay="400"
-            animate={{ y: [0, 12, 0] }}
+            data-aos-delay="200"
+            animate={{ y: [0, 15, 0] }}
             transition={{
-              duration: 5,
+              duration: 6,
               repeat: Infinity,
               ease: "easeInOut",
               delay: 1,
             }}
-            className="absolute top-1/3 left-10 bg-white p-6 rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.06)] flex items-center gap-5 border border-slate-100 group"
+            className="absolute top-1/3 left-10 bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-2xl flex items-center gap-5 group"
           >
-            <div className="p-3 bg-cyan-50 text-[#6FDEF7] rounded-lg text-3xl group-hover:scale-110 transition-transform">
+            <div className="p-3 bg-[#6FDEF7]/20 text-[#6FDEF7] rounded-xl text-3xl group-hover:scale-110 transition-transform">
               <HiOutlineUsers />
             </div>
             <div className="pr-4">
-              <h3 className="text-2xl font-black text-[#001D3D]">98%</h3>
+              <h3 className="text-2xl font-black text-white">98%</h3>
               <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">
                 Retention
               </p>
             </div>
           </motion.div>
 
-          {/* Card 3 */}
+          {/* Partners Card */}
           <motion.div
             data-aos="fade-left"
-            data-aos-delay="600"
+            data-aos-delay="400"
             animate={{ y: [0, -10, 0] }}
             transition={{
-              duration: 6,
+              duration: 7,
               repeat: Infinity,
               ease: "easeInOut",
               delay: 2,
             }}
-            className="absolute bottom-10 right-10 bg-white p-6 rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.06)] flex items-center gap-5 border border-slate-100 group"
+            className="absolute bottom-10 right-10 bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-2xl flex items-center gap-5 group"
           >
-            <div className="p-3 bg-indigo-50 text-indigo-500 rounded-lg text-3xl group-hover:scale-110 transition-transform">
+            <div className="p-3 bg-indigo-500/20 text-indigo-400 rounded-xl text-3xl group-hover:scale-110 transition-transform">
               <HiOutlineOfficeBuilding />
             </div>
             <div className="pr-4">
-              <h3 className="text-2xl font-black text-[#001D3D]">50+</h3>
+              <h3 className="text-2xl font-black text-white">50+</h3>
               <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">
                 Partners
               </p>

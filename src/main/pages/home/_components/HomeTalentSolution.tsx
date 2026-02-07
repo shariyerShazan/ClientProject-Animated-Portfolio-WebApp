@@ -47,21 +47,24 @@ const HomeTalentSolution = () => {
   return (
     <section className="relative w-full py-24 px-6 md:px-16 overflow-hidden bg-neutral-950">
       {/* 🔵 PARTICLES BACKGROUND (section only) */}
-      <Particles
-        quantity={1000}
-        color="#2F8BDD"
-        // Staticity 1500 theke komiye 80-100 er moddhe rakhun.
-        // Eta particles gulo-ke mouse theke "dhire susthe" dure sorbe, jhatka dibe na.
-        staticity={100}
-        // Ease 25 theke baraye 40-50 kora holo.
-        // Ease joto baraben, nora-chora toto "fluid" ba smooth hobe.
-        ease={50}
-        size={0.6}
-        className="absolute inset-0 z-0 bg-transparent"
-        // Constant drift (Dhire dhire niche bheshe jaoar jonno)
-        vx={0.2}
-        vy={0.4}
-      />
+      <div className="absolute inset-0 z-0">
+        {" "}
+        <Particles
+          quantity={1000}
+          color="#2F8BDD"
+          // Staticity 1500 theke komiye 80-100 er moddhe rakhun.
+          // Eta particles gulo-ke mouse theke "dhire susthe" dure sorbe, jhatka dibe na.
+          staticity={100}
+          // Ease 25 theke baraye 40-50 kora holo.
+          // Ease joto baraben, nora-chora toto "fluid" ba smooth hobe.
+          ease={50}
+          size={0.6}
+          className="absolute inset-0 z-0 bg-transparent"
+          // Constant drift (Dhire dhire niche bheshe jaoar jonno)
+          vx={0.2}
+          vy={0.4}
+        />
+      </div>
 
       {/* CONTENT */}
       <div className="relative z-10 max-w-7xl mx-auto w-full mt-10">
