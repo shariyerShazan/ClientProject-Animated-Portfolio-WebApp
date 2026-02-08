@@ -1,5 +1,5 @@
 // components/main/BackgroundVideo.tsx
-import React from "react";
+
 import videoFile from "@/assets/main/video/video-3.mp4";
 
 const BackgroundVideo = () => {

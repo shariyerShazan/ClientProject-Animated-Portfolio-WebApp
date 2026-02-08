@@ -1,7 +1,7 @@
 "use client";
 
 // import React, { useState } from "react";
-import { Link,
+import { Link, useNavigate,
     //  NavLink 
     } from "react-router";
 // import { HiMenuAlt3, HiX } from "react-icons/hi";
@@ -106,6 +106,7 @@ import logo from "@/assets/main/logo.png";
 
 // Navbar.jsx (Simplified)
 const Navbar = () => {
+  const navigate = useNavigate()
   return (
     <div className="flex items-center justify-between">
       {/* Logo */}
@@ -114,7 +115,7 @@ const Navbar = () => {
       </Link>
 
       {/* Right Side - Contact Button Only */}
-      <button className="bg-gradient-to-r from-[#6FDEF7] to-[#2F8BDD] text-white px-8 py-2.5 rounded-full font-bold shadow-lg hover:scale-105 transition-all duration-500">
+      <button onClick={()=> navigate("contact")} className="bg-gradient-to-r cursor-pointer from-[#6FDEF7] to-[#2F8BDD] text-white px-8 py-2.5 rounded-full font-bold shadow-lg hover:scale-105 transition-all duration-500">
         Contact Us
       </button>
     </div>
