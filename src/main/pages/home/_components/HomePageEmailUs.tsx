@@ -47,8 +47,11 @@ const HomePageEmailUs = () => {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 mb-6 backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-[#6FDEF7] animate-pulse" />
+          <div className="inline-flex items-center gap-2.5 px-3 py-1 border-l-3 border-[#6FDEF7] bg-[#6FDEF7]/10 mb-8">
+            <span className="flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-[#ea2857] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#ea2857]"></span>
+            </span>
             <span className="text-xs font-bold tracking-widest text-[#6FDEF7] uppercase">
               Contact us
             </span>

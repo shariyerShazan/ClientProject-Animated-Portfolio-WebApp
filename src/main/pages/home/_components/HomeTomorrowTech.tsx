@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { motion } from "framer-motion";
@@ -65,10 +65,10 @@ const HomeTomorrowTech = () => {
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
         {/* LEFT CONTENT */}
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-6">
+          <div className="inline-flex items-center gap-2.5 px-3 py-1 border-l-3 border-[#6FDEF7] bg-[#6FDEF7]/10 mb-8">
             <span className="flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-[#6FDEF7] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#6FDEF7]"></span>
+              <span className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-[#ea2857] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#ea2857]"></span>
             </span>
             <span
               data-aos="fade-right"

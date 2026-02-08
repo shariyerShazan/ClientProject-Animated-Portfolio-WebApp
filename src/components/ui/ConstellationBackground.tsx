@@ -1,33 +1,29 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 export interface ConstellationBackgroundProps {
   className?: string;
   children?: React.ReactNode;
-  /** Number of nodes */
   count?: number;
-  /** Maximum distance for connections */
   connectionDistance?: number;
-  /** Node color */
   nodeColor?: string;
-  /** Line color */
   lineColor?: string;
-  /** Node size */
   nodeSize?: number;
-  /** Mouse repulsion radius */
   mouseRadius?: number;
-  /** Enable glow effect */
   glow?: boolean;
 }
 
-interface Node {
+interface StarNode {
   x: number;
   y: number;
   vx: number;
   vy: number;
   radius: number;
+  baseRadius: number;
+  phase: number;
+  twinkleSpeed: number;
 }
 
 export function ConstellationBackground({
@@ -38,11 +34,11 @@ export function ConstellationBackground({
   nodeColor = "rgba(136, 196, 255, 1)",
   lineColor = "rgba(136, 196, 255, 0.15)",
   nodeSize = 2,
-  mouseRadius = 100,
+  mouseRadius = 120,
   glow = true,
 }: ConstellationBackgroundProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -52,151 +48,162 @@ export function ConstellationBackground({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const rect = container.getBoundingClientRect();
-    let width = rect.width;
-    let height = rect.height;
+    let width = container.clientWidth;
+    let height = container.clientHeight;
     canvas.width = width;
     canvas.height = height;
 
-    let animationId: number;
-    let mouseX = -1000;
-    let mouseY = -1000;
+    let mouseX = -9999;
+    let mouseY = -9999;
+    let rafId = 0;
 
-    // Create nodes
-    const createNode = (): Node => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      radius: Math.random() * nodeSize + nodeSize * 0.5,
-    });
+    const createStar = (): StarNode => {
+      const base = Math.random() * nodeSize + nodeSize * 0.6;
 
-    const nodes: Node[] = Array.from({ length: count }, createNode);
+      return {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        radius: base,
+        baseRadius: base,
+        phase: Math.random() * Math.PI * 2,
+        twinkleSpeed: 0.01 + Math.random() * 0.02,
+      };
+    };
 
-    // Mouse handlers
-    const handleMouseMove = (e: MouseEvent) => {
+    const stars: StarNode[] = Array.from({ length: count }, createStar);
+
+    const onMouseMove = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
       mouseX = e.clientX - rect.left;
       mouseY = e.clientY - rect.top;
     };
 
-    const handleMouseLeave = () => {
-      mouseX = -1000;
-      mouseY = -1000;
+    const onMouseLeave = () => {
+      mouseX = -9999;
+      mouseY = -9999;
     };
 
-    container.addEventListener("mousemove", handleMouseMove);
-    container.addEventListener("mouseleave", handleMouseLeave);
+    container.addEventListener("mousemove", onMouseMove);
+    container.addEventListener("mouseleave", onMouseLeave);
 
-    // Resize handler
-    const handleResize = () => {
-      const rect = container.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
+    const resizeObserver = new ResizeObserver(() => {
+      width = container.clientWidth;
+      height = container.clientHeight;
       canvas.width = width;
       canvas.height = height;
-    };
+    });
 
-    const ro = new ResizeObserver(handleResize);
-    ro.observe(container);
+    resizeObserver.observe(container);
 
-    // Animation
     const animate = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Update and draw nodes
-      for (const node of nodes) {
-        // Mouse repulsion
-        if (mouseRadius > 0) {
-          const dx = node.x - mouseX;
-          const dy = node.y - mouseY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < mouseRadius && dist > 0) {
-            const force = ((mouseRadius - dist) / mouseRadius) * 0.02;
-            node.vx += (dx / dist) * force;
-            node.vy += (dy / dist) * force;
-          }
-        }
+      // Update stars
+// ... Update stars loop er bhetore ei logic ta ektu adjust koren
+for (const star of stars) {
+  // 1. Twinkle ✨ (Eita thik ache)
+  star.phase += star.twinkleSpeed;
+  const pulse = (Math.sin(star.phase) + 1) / 2;
+  star.radius = star.baseRadius + pulse * star.baseRadius * 0.6;
 
-        // Apply velocity with damping
-        node.x += node.vx;
-        node.y += node.vy;
-        node.vx *= 0.99;
-        node.vy *= 0.99;
+  // 2. Mouse Interaction (Repulsion Logic) 🖱️
+  if (mouseRadius > 0) {
+    const dx = star.x - mouseX;
+    const dy = star.y - mouseY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
 
-        // Add slight random movement
-        node.vx += (Math.random() - 0.5) * 0.01;
-        node.vy += (Math.random() - 0.5) * 0.01;
+    if (dist < mouseRadius) {
+      // "force" bariye dewa holo jate shore jaoa ta druto hoy
+      const force = (mouseRadius - dist) / mouseRadius;
+      
+      // Acceleration bariye dilam (0.03 -> 0.4)
+      // Joto kache ashbe, toto jore push korbe
+      star.vx += (dx / dist) * force * 0.4; 
+      star.vy += (dy / dist) * force * 0.4;
+    }
+  }
 
-        // Bounce off edges
-        if (node.x < 0 || node.x > width) {
-          node.vx *= -1;
-          node.x = Math.max(0, Math.min(width, node.x));
-        }
-        if (node.y < 0 || node.y > height) {
-          node.vy *= -1;
-          node.y = Math.max(0, Math.min(height, node.y));
-        }
-      }
+  // 3. Apply Velocity
+  star.x += star.vx;
+  star.y += star.vy;
 
-      // Draw connections
+  // Friction: Eita tara guloke move houar por abar slow kore dibe
+  // Damping ektu komale (0.95) tara gulo beshi nora-chora korbe
+  star.vx *= 0.97;
+  star.vy *= 0.97;
+
+  // 4. Boundaries (Tara gulo jeno screen er baire harie na jay)
+  if (star.x < 0) { star.x = 0; star.vx *= -1; }
+  if (star.x > width) { star.x = width; star.vx *= -1; }
+  if (star.y < 0) { star.y = 0; star.vy *= -1; }
+  if (star.y > height) { star.y = height; star.vy *= -1; }
+}
+
+      // Connections
       ctx.strokeStyle = lineColor;
       ctx.lineWidth = 1;
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = nodes[i].x - nodes[j].x;
-          const dy = nodes[i].y - nodes[j].y;
+
+      for (let i = 0; i < stars.length; i++) {
+        for (let j = i + 1; j < stars.length; j++) {
+          const dx = stars[i].x - stars[j].x;
+          const dy = stars[i].y - stars[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < connectionDistance) {
-            const opacity = 1 - dist / connectionDistance;
-            ctx.globalAlpha = opacity * 0.5;
+            ctx.globalAlpha = 1 - dist / connectionDistance;
             ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.moveTo(stars[i].x, stars[i].y);
+            ctx.lineTo(stars[j].x, stars[j].y);
             ctx.stroke();
           }
         }
       }
 
-      // Draw nodes
-      ctx.globalAlpha = 1;
-      for (const node of nodes) {
-        // Glow
+      // Draw stars
+      for (const star of stars) {
+        const pulse = (Math.sin(star.phase) + 1) / 2;
+        const alpha = 0.6 + pulse * 0.4;
+
         if (glow) {
           const gradient = ctx.createRadialGradient(
-            node.x,
-            node.y,
+            star.x,
+            star.y,
             0,
-            node.x,
-            node.y,
-            node.radius * 4,
+            star.x,
+            star.y,
+            star.radius * 4,
           );
-          gradient.addColorStop(0, nodeColor.replace("1)", "0.3)"));
+
+          gradient.addColorStop(0, nodeColor.replace("1)", "0.35)"));
           gradient.addColorStop(1, "transparent");
+
+          ctx.globalAlpha = alpha;
           ctx.fillStyle = gradient;
           ctx.beginPath();
-          ctx.arc(node.x, node.y, node.radius * 4, 0, Math.PI * 2);
+          ctx.arc(star.x, star.y, star.radius * 4, 0, Math.PI * 2);
           ctx.fill();
         }
 
-        // Core
+        ctx.globalAlpha = alpha;
         ctx.fillStyle = nodeColor;
         ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      animationId = requestAnimationFrame(animate);
+      ctx.globalAlpha = 1;
+      rafId = requestAnimationFrame(animate);
     };
 
-    animationId = requestAnimationFrame(animate);
+    rafId = requestAnimationFrame(animate);
 
     return () => {
-      cancelAnimationFrame(animationId);
-      container.removeEventListener("mousemove", handleMouseMove);
-      container.removeEventListener("mouseleave", handleMouseLeave);
-      ro.disconnect();
+      cancelAnimationFrame(rafId);
+      resizeObserver.disconnect();
+      container.removeEventListener("mousemove", onMouseMove);
+      container.removeEventListener("mouseleave", onMouseLeave);
     };
   }, [
     count,
@@ -215,25 +222,15 @@ export function ConstellationBackground({
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
-      {/* Subtle radial gradient overlay */}
+      {/* Soft glow */}
       <div
         className="pointer-events-none absolute inset-0 opacity-40"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 50%, rgba(56, 189, 248, 0.08) 0%, transparent 60%)",
+            "radial-gradient(circle at center, rgba(56,189,248,0.08), transparent 60%)",
         }}
       />
 
-      {/* Vignette */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, transparent 0%, transparent 50%, rgba(10,10,10,0.8) 100%)",
-        }}
-      />
-
-      {/* Content layer */}
       {children && (
         <div className="relative z-10 h-full w-full">{children}</div>
       )}

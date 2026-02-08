@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+
 import { Link } from "react-router";
 import { motion } from "framer-motion";
 import { FaLinkedinIn, FaFacebookF, FaInstagram } from "react-icons/fa";
@@ -58,7 +58,7 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             className="lg:col-span-4"
           >
-            <Link to="/" className="inline-block mb-6">
+            <Link to="/" className="inline-block mb-6 ">
               <img src={logo} alt="Aventra3" className="h-10 brightness-110" />
             </Link>
             <p className="text-slate-400 leading-relaxed mb-8 max-w-sm">

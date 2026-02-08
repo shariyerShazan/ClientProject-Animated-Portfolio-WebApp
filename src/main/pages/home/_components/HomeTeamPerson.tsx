@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
 import person2 from "@/assets/main/p.png";
 import person3 from "@/assets/main/p2.png";
@@ -55,10 +54,10 @@ const HomeTeamPerson = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-20"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 mb-6 backdrop-blur-md">
+          <div className="inline-flex items-center gap-2.5 px-3 py-1 border-l-3 border-[#6FDEF7] bg-[#6FDEF7]/10 mb-8">
             <span className="flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-[#6FDEF7] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#6FDEF7]"></span>
+              <span className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-[#ea2857] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#ea2857]"></span>
             </span>
             <span className="text-xs font-bold tracking-widest text-blue-400 uppercase">
               Our Team
